@@ -1,0 +1,100 @@
+/**
+ * Clase que contiene los metodos que dan funcionalidad a la interfaz UsoActualSuelo
+ *
+ * @package ley18450v3
+ * @author AugustoCárdenas
+ * @copyright CNR
+ * @link https://www.cnr.cl
+ * @since 14-10-2016
+ * @version 1.0
+ * @filesource pages/UsoActualSuelo/UsoActualSuelo.js getter('d') getter('p')
+*/
+var i_UsoActualSuelo = (function($, window, document, undefined)
+{
+	'use strict';
+	/**
+	 * Constructor de la clase.
+	 *
+	 * @author AugustoCárdenas
+	 * @since 14-10-2016
+	 * @version 1.0
+	 * @param data: Arreglo de variables de configuracion de clase.
+	 *
+	 * @return void
+	*/
+	function UsoActualSuelo(data)
+	{
+		this.nombre = 'UsoActualSuelo';
+		this.validar = new i_Validar();
+		this.tableSuelo;
+		this.IDTIPORUBRO = undefined;
+	}
+
+	/**
+	 * Inicializa el despliegue de la interfaz.
+	 *
+	 * @author Gustavo Diaz
+	 * @since 10-02-2017
+	 * @version 1.0
+	 * @param: 
+	 *
+	 * @return void
+	*/
+	UsoActualSuelo.prototype.init = function(dato)
+	{
+		// INI Fuera de estandarizacion
+	    $("#idUsoActualSuelo").val(getter("d"));
+		$("#divGridEditarUsoActualSuelo").hide();
+		// FIN Fuera de estandarizacion
+
+		this.init2();
+	};
+
+	/** Metodo que valida Superficie predio.
+	 *
+	 * @author AugustoCárdenas
+	 * @since 14-10-2016
+	 * @version 1.0
+	 * @param data: Paquete de inyeccion de datos y metadatos.
+	 *
+	 * @return
+	*/
+	UsoActualSuelo.prototype.validaSupPredio = function(data)
+	{
+		$.ajax({
+			url:   globalPathSystem+'UsoActualSuelo/validaSupPredio',
+			data:{IDPROYECTO:getter("d")},
+			dataType: "json",
+			type: 'GET',
+			success: function(data) {
+				if(data.data!=""){
+					// console.log(data.data.msg);
+					if(data.data.msg==""){
+						$("#spnIntValidaSuperficie").html("");
+					}else{
+						$("#spnIntValidaSuperficie").html(data.data.msg);
+					}
+				}
+			},
+			error: function (jqXHR, status) {
+			    var txt = 'Ha ocurrido un error en la aplicación para obtener la validacion de la sumatoria, '+ jqXHR.status+ "-" +status+', favor intente nuevamente';
+			    console.log(txt);
+			    $.notify(txt,{
+			 		className: 'error',
+			 		globalPosition: 'top center'
+			    });
+				return false;
+			}
+		});
+	};
+
+	return(UsoActualSuelo);
+})(jQuery, window, document);
+
+var usoActualSuelo;
+var hilosNavegacion;
+
+addBreadCrumbs("breadcrumbs","Postulación",true);
+addBreadCrumbs("breadcrumbs","Proyectos",false);
+addBreadCrumbs("breadcrumbs","Ingreso y Mantención",false);
+addBreadCrumbs("breadcrumbs","Uso Actual Suelo",false);
